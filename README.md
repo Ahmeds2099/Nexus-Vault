@@ -1,23 +1,17 @@
 # Nexus Vault (Local MVP)
 
-A local-first content saving system. Save, organize, and access anything from your desktop or mobile device — privately, with no cloud dependency.
+I am building a local-first content saving system called Nexus Vault. My goal is to create a tool to save, organize, and access anything from my desktop or mobile device — privately, with zero cloud dependency.
 
-## Architecture
+## My Tech Stack
 - **Backend:** FastAPI + PostgreSQL
 - **Frontend:** Next.js (Desktop UI + Mobile PWA)
 - **Database:** PostgreSQL via SQLAlchemy (async)
 
-## Project Structure
-```
-Phone Connector/
-├── backend/         # FastAPI application
-├── frontend/        # Next.js application
-├── docs/            # Technical docs
-├── venv/            # Python virtual environment
-├── context.md       # Session-by-session change log
-├── README.md        # This file
-└── requirements.txt # Python dependencies
-```
+## What I'm Currently Focused On (MVP v2)
+I recently pivoted the project focus to **Universal Share Capture**:
+- **Capture:** I'm building an instant saving mechanism via Mobile Share Target (PWA) or desktop Quick-Save.
+- **Enrich:** I am developing a Backend Enrichment Service (Scraper) for automated metadata extraction.
+- **Vault:** I am designing a premium, exploratory interface for curated discoveries.
 
 ## Version History
 | Version | Date | Description |
@@ -27,25 +21,8 @@ Phone Connector/
 | 0.3.0 | 2026-05-06 | Phase 2: UI System Complete & Pivot to MVP v2 |
 | 0.3.1 | 2026-05-08 | Phase 3: Intake Pipeline Setup (Dependencies & Migration Prep) |
 
-## Current Goals (MVP v2)
-Nexus Vault is now focused on **Universal Share Capture**:
-- **Capture:** Instant saving via Mobile Share Target (PWA) or desktop Quick-Save.
-- **Enrich:** Automated metadata extraction (Scraper Service).
-- **Vault:** A premium, exploratory interface for curated discoveries.
-
-## Getting Started (Phase 3)
-1. **Configure Environment:**
-   - Copy `backend/.env.example` to `backend/.env`.
-   - Update `DATABASE_URL` with your local PostgreSQL password.
-2. **Reset Database (CRITICAL):**
-   ```bash
-   # From root
-   python backend/scripts/reset_db.py
-   ```
-3. **Run Services:**
-   - **Backend:** `cd backend && uvicorn app.main:app --reload`
-   - **Frontend:** `cd frontend && npm run dev`
-
-## Setup & Migration Notes
-> [!IMPORTANT]
-> The Phase 2 -> Phase 3 transition requires a full database reset to apply the new `raw_url` and `processing_status` columns. Run this BEFORE starting the server for the first time in Phase 3.
+## What's Next (Phase 3)
+Right now, I am working on the Intake Pipeline. My immediate next steps are:
+1. **Fixing a Database Blocker:** Resolving a PostgreSQL password authentication error so I can run `python backend/scripts/reset_db.py` to reset the database schema.
+2. **Scraper Development:** Building out `backend/app/services/scraper.py` using `httpx` and `BeautifulSoup4` to parse titles and metadata from saved URLs.
+3. **PWA Integration:** Setting up the Web Share Target in the Next.js frontend to send URLs directly to the backend background processor.

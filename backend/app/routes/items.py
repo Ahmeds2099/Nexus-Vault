@@ -57,16 +57,24 @@ def create_item(
     response_model=ItemListResponse,
     status_code=status.HTTP_200_OK,
     summary="List all items",
-    description="Retrieve all saved items, with optional filters by category or read status.",
+    description="Retrieve all saved items, with optional filters by category, type, or status.",
 )
 def list_items(
     category: Optional[str] = Query(
         default=None,
-        description="Filter by category (read_later, article, video, tool, note)",
+        description="Filter by user category (Read Later, Important, etc.)",
+    ),
+    item_type: Optional[str] = Query(
+        default=None,
+        description="Filter by content type (article, video, tool, note, link, pdf)",
     ),
     is_read: Optional[bool] = Query(
         default=None,
         description="Filter by read status (true/false)",
+    ),
+    processing_status: Optional[str] = Query(
+        default=None,
+        description="Filter by status (pending, completed, failed)",
     ),
     skip: int = Query(default=0, ge=0, description="Pagination offset"),
     limit: int = Query(default=100, ge=1, le=500, description="Max items to return"),
@@ -76,7 +84,9 @@ def list_items(
     items, total = ItemService.get_all(
         db=db,
         category=category,
+        item_type=item_type,
         is_read=is_read,
+        processing_status=processing_status,
         skip=skip,
         limit=limit,
     )

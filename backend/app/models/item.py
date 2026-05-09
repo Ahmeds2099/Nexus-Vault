@@ -2,13 +2,12 @@
 models/item.py — SQLAlchemy ORM model for the Item table.
 
 This class defines what the 'items' table looks like in PostgreSQL.
-Every field here = one column in the database.
 """
 
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Column, String, Boolean, DateTime, Text
+from sqlalchemy import Column, String, Boolean, DateTime, Text, JSON
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.database import Base
@@ -17,35 +16,31 @@ from app.database import Base
 class Item(Base):
     """
     The core data model — represents a single piece of saved content.
-    
-    A user can save URLs, notes, articles, etc.
-    Each item is categorized and can be marked as read/unread.
+    MVP v2 fields support the Universal Share Capture flow.
     """
 
     __tablename__ = "items"
 
-    # ── Primary Key ───────────────────────────────────────────────────────
-    # UUID instead of integer: safe for offline creation + future multi-user
     id = Column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         index=True,
         nullable=False,
-        comment="Unique identifier (UUID v4)",
     )
 
-    # ── Core Content Fields ───────────────────────────────────────────────
-    title = Column(
-        String(500),
-        nullable=False,
-        comment="Title of the saved item",
-    )
-
-    url = Column(
+    # ── Intake Fields ─────────────────────────────────────────────────────
+    raw_url = Column(
         String(2048),
         nullable=True,
-        comment="URL of the saved content (optional for plain notes)",
+        comment="The original URL or text captured via share sheet",
+    )
+    
+    # ── Extracted Content Fields ──────────────────────────────────────────
+    title = Column(
+        String(500),
+        nullable=True,
+        comment="Title of the saved item (can be extracted later)",
     )
 
     description = Column(
@@ -54,27 +49,57 @@ class Item(Base):
         comment="Short description or excerpt of the content",
     )
 
-    thumbnail_url = Column(
+    thumbnail = Column(
         String(2048),
         nullable=True,
         comment="Preview image URL for the item",
     )
+    
+    source = Column(
+        String(255),
+        nullable=True,
+        index=True,
+        comment="Detected source platform (e.g., YouTube, GitHub, Web)",
+    )
 
     # ── Organization Fields ───────────────────────────────────────────────
+    item_type = Column(
+        String(100),
+        nullable=False,
+        default="link",
+        index=True,
+        comment="Deterministic type: article, video, tool, note, link, pdf",
+    )
+    
     category = Column(
         String(100),
         nullable=False,
-        default="read_later",
-        index=True,  # Indexed for fast filtering by category
-        comment="Category: read_later | article | video | tool | note",
+        default="Read Later",
+        index=True,
+        comment="User categorization folder (Read Later, Important, etc.)",
     )
 
     is_read = Column(
         Boolean,
         nullable=False,
         default=False,
-        index=True,  # Indexed for fast filtering by read status
-        comment="Whether the user has read/consumed this item",
+        index=True,
+    )
+
+    # ── Processing & Metadata ─────────────────────────────────────────────
+    metadata_json = Column(
+        JSON,
+        nullable=True,
+        default={},
+        comment="Raw OpenGraph, Twitter Card, or scraped JSON data",
+    )
+
+    processing_status = Column(
+        String(50),
+        nullable=False,
+        default="pending",
+        index=True,
+        comment="pending | completed | failed",
     )
 
     # ── Timestamps ────────────────────────────────────────────────────────
@@ -82,7 +107,6 @@ class Item(Base):
         DateTime,
         nullable=False,
         default=datetime.utcnow,
-        comment="When the item was first saved",
     )
 
     updated_at = Column(
@@ -90,8 +114,7 @@ class Item(Base):
         nullable=False,
         default=datetime.utcnow,
         onupdate=datetime.utcnow,
-        comment="When the item was last modified",
     )
 
     def __repr__(self) -> str:
-        return f"<Item id={self.id} title='{self.title}' category='{self.category}'>"
+        return f"<Item id={self.id} title='{self.title}' type='{self.item_type}'>"

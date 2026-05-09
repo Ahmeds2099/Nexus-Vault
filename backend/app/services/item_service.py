@@ -28,33 +28,40 @@ class ItemService:
     @staticmethod
     def create(db: Session, payload: ItemCreate) -> Item:
         """
-        Insert a new item into the database.
+        Insert a new item into the database via Universal Share Capture.
         
         Args:
             db: Active database session (injected by FastAPI)
             payload: Validated ItemCreate data from the request
         
         Returns:
-            The newly created Item ORM object (with id and timestamps set)
+            The newly created Item ORM object
         """
+        # Determine initial status based on whether a URL needs processing
+        initial_status = "pending" if payload.raw_url else "completed"
+        # Determine basic type
+        initial_type = "link" if payload.raw_url else "note"
+
         item = Item(
+            raw_url=payload.raw_url,
             title=payload.title,
-            url=payload.url,
             description=payload.description,
-            thumbnail_url=payload.thumbnail_url,
             category=payload.category,
-            is_read=payload.is_read,
+            item_type=initial_type,
+            processing_status=initial_status,
         )
         db.add(item)
         db.commit()
-        db.refresh(item)  # Reload from DB to get generated id, created_at, etc.
+        db.refresh(item)
         return item
 
     @staticmethod
     def get_all(
         db: Session,
         category: Optional[str] = None,
+        item_type: Optional[str] = None,
         is_read: Optional[bool] = None,
+        processing_status: Optional[str] = None,
         skip: int = 0,
         limit: int = 100,
     ) -> tuple[list[Item], int]:
@@ -63,8 +70,10 @@ class ItemService:
         
         Args:
             db: Active database session
-            category: Filter by category (e.g. "read_later", "video")
+            category: Filter by user category (e.g. "Read Later")
+            item_type: Filter by content type (e.g. "article", "video")
             is_read: Filter by read status (True/False)
+            processing_status: Filter by status (pending, completed, failed)
             skip: Pagination offset (default 0)
             limit: Max items to return (default 100)
         
@@ -77,8 +86,12 @@ class ItemService:
         filters = []
         if category is not None:
             filters.append(Item.category == category)
+        if item_type is not None:
+            filters.append(Item.item_type == item_type)
         if is_read is not None:
             filters.append(Item.is_read == is_read)
+        if processing_status is not None:
+            filters.append(Item.processing_status == processing_status)
 
         if filters:
             query = query.filter(and_(*filters))

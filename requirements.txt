@@ -26,3 +26,7 @@ aiofiles==25.1.0
 # PostgreSQL Drivers (requires PostgreSQL installed on system)
 asyncpg==0.31.0
 psycopg2-binary==2.9.12
+
+# Scraper Dependencies
+httpx==0.28.0
+beautifulsoup4==4.12.3

@@ -143,3 +143,18 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  .glass-card {
+    background: color-mix(in srgb, var(--card) 60%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+  }
+  .glass-card:active {
+    border: 1px solid color-mix(in srgb, var(--border) 100%, transparent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+  .glow-bg {
+    background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%);
+  }
+}

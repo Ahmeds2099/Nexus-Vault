@@ -21,9 +21,10 @@ I recently pivoted the project focus to **Universal Share Capture**:
 | 0.3.0 | 2026-05-06 | Phase 2: UI System Complete & Pivot to MVP v2 |
 | 0.3.1 | 2026-05-08 | Phase 3: Intake Pipeline Setup (Dependencies & Migration Prep) |
 | 0.4.0 | 2026-05-09 | Phase 3: Intake Pipeline Complete (DB Migration, Scraper, Background Processing) |
+| 0.5.0 | 2026-05-09 | Phase 4: Frontend Integration Complete (Stitch MCP UI, PWA Web Share, TanStack Query) |
 
-## What's Next (Phase 4: PWA Capture & Frontend Wiring)
-With the backend enrichment pipeline complete, my immediate next steps are:
-1. **PWA Web Share Target:** Configuring `manifest.json` so the app appears in the mobile share sheet.
-2. **Capture Page:** Building `frontend/app/capture/page.tsx` to handle incoming shared content.
-3. **Frontend Integration:** Connecting the TanStack Query hooks to the live `/api/items/` endpoint to display enriched data.
+## What's Next (Phase 5: UX Polish & State Management)
+With the frontend successfully capturing and displaying data from the live backend using the new Stitch MCP "Obsidian Glass" design system, the immediate next steps are:
+1. **Search & Filtering:** Implement the logic in the dashboard to filter items by category and search by keyword.
+2. **Real-time Status Updates:** Setup polling or WebSockets in the UI to seamlessly transition cards from "Processing" to "Complete" without a full page refresh.
+3. **Detail View:** Build the `frontend/app/items/[id]/page.tsx` for viewing the full content of a saved item.

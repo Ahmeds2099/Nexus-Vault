@@ -19,6 +19,9 @@ backend/scripts/reset_db.py
 context.md
 docs/
 .cmd
+AGENTS.md
+CLAUDE.md
+.agents/
 
 # IDEs
 .vscode/

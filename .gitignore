@@ -11,9 +11,14 @@ build/
 dist/
 *.egg-info/
 
+# Scripts
+backend/scripts/check_db.py
+backend/scripts/reset_db.py
+
 # Documentation (Excluded as per user request)
 context.md
 docs/
+.cmd
 
 # IDEs
 .vscode/

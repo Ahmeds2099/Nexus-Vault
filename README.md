@@ -20,9 +20,10 @@ I recently pivoted the project focus to **Universal Share Capture**:
 | 0.2.0 | 2026-05-06 | Phase 1: FastAPI Backend with PostgreSQL & Item CRUD |
 | 0.3.0 | 2026-05-06 | Phase 2: UI System Complete & Pivot to MVP v2 |
 | 0.3.1 | 2026-05-08 | Phase 3: Intake Pipeline Setup (Dependencies & Migration Prep) |
+| 0.4.0 | 2026-05-09 | Phase 3: Intake Pipeline Complete (DB Migration, Scraper, Background Processing) |
 
-## What's Next (Phase 3)
-Right now, I am working on the Intake Pipeline. My immediate next steps are:
-1. **Fixing a Database Blocker:** Resolving a PostgreSQL password authentication error so I can run `python backend/scripts/reset_db.py` to reset the database schema.
-2. **Scraper Development:** Building out `backend/app/services/scraper.py` using `httpx` and `BeautifulSoup4` to parse titles and metadata from saved URLs.
-3. **PWA Integration:** Setting up the Web Share Target in the Next.js frontend to send URLs directly to the backend background processor.
+## What's Next (Phase 4: PWA Capture & Frontend Wiring)
+With the backend enrichment pipeline complete, my immediate next steps are:
+1. **PWA Web Share Target:** Configuring `manifest.json` so the app appears in the mobile share sheet.
+2. **Capture Page:** Building `frontend/app/capture/page.tsx` to handle incoming shared content.
+3. **Frontend Integration:** Connecting the TanStack Query hooks to the live `/api/items/` endpoint to display enriched data.
